@@ -2,7 +2,9 @@ import httplib
 import re
 from bs4 import BeautifulSoup
 from datetime import datetime
-
+import twitter
+import cPickle as pickle
+import time
 
 def crawl():
     url = '/online_services/jury/jury_duty_weekly_status.shtml'
@@ -22,7 +24,6 @@ def concat(string):
     for each in string:
             result+=each
     return result
-
 
 class juryGroup:
     def __init__(self,input):
@@ -55,8 +56,17 @@ class juryGroup:
         else:
             return 'Groups ' + str(self.groupRange[0]) + ' to ' + str(self.groupRange[1]) + ' please check again after ' + self.datetime.strftime('%I:%M%p') + ' on ' + self.datetime.strftime('%A, %B %d')
 
+#Load twitter keys, this file is NOT in github
+with open('key.pickle', 'rb') as fp:
+    keys = pickle.load(fp)
 
+#Initialize twitter API access
+api = twitter.Api(consumer_key=keys['consumer_key'],
+                  consumer_secret=keys['consumer_secret'],
+                  access_token_key=keys['access_token'],
+                  access_token_secret=keys['access_token_secret'])
 
+#main garbage
 soup = BeautifulSoup(crawl())
 table_rows = soup.find_all('tr')
 output = []
@@ -69,5 +79,7 @@ for each in table_rows:
             queue.append(output[-1].report())
     except ValueError:
         badrow.append(each)
+#Tweet all report times in the future
 for each in queue:
-    print each
+    api.PostUpdate(queue[each])
+    time.sleep(60)
