@@ -25,7 +25,7 @@ def concat(string):
             result+=each
     return result
 
-def atMe():
+def atMe(input):
     try:
         mentions = api.GetMentions()
     except:
@@ -41,14 +41,14 @@ def atMe():
         #responseStr = "@" + each['username'] + " Group number " + str(each['groupNo']) + " reports at BLAH BLAH BLAH"
         #print responseStr
         success = 0
-        for group in output:
-            if each['groupNo'] in range(output.groupRange[0], output.groupRange[1]+1):
-                responseStr = "@" + each['username'] + " " + output.report()
-                #api.PostUpdate(responseStr,in_reply_to_status_id=each['id'])
+        for group in input:
+            if each['groupNo'] in range(int(group.groupRange[0]), int(group.groupRange[1])+1):
+                responseStr = "@" + each['username'] + " " + group.report()
+                api.PostUpdate(responseStr,in_reply_to_status_id=each['id'])
                 success = 1
         if success == 0:
             responseStr = "@" + each['username'] + " Sorry, we cant find that group number, or our web robot had a problem"
-            #api.PostUpdate(responseStr,in_reply_to_status_id=each['id'])
+            api.PostUpdate(responseStr,in_reply_to_status_id=each['id'])
         time.sleep(60) #Don't spam twitter API
     return toRespond[-1]['id'] #returns ID of most recent @
 
@@ -112,8 +112,9 @@ for each in table_rows:
         badrow.append(each)
 #Tweet all report times in the future
 for each in queue:
-    api.PostUpdate(queue[each])
+    api.PostUpdate(each)
     time.sleep(60) #Don't spam twitter API
+print "Queue Complete"
 
 #Respond to GetMentions
-recentID = AtMe()
+recentID = atMe(output)
