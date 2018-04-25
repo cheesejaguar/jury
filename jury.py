@@ -33,11 +33,14 @@ class juryGroup:
         self.instructions = self.columns[1].text.encode('ascii')
         rawTime = self.columns[3].text.encode('ascii').split(' ')
         self.called = 0
-        if len(rawTime) is 2:
+        if len(rawTime) is 2: #time
             Time = concat(rawTime)
             self.called = 1
         elif len(rawTime) is 3:
-            Time = concat(rawTime[1:])
+            Time = concat(rawTime[1:]) #After time
+            self.called = 0
+        elif len(rawTime) is 6: #Between 11 and noon BS
+            Time = concat(rawTime[1:3])
             self.called = 0
         else:
             Time = 0
