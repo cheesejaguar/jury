@@ -25,6 +25,25 @@ def concat(string):
             result+=each
     return result
 
+def atMe():
+    try:
+        mentions = api.GetMentions()
+    except:
+        print "API Error?"
+    toRespond = []
+    responseStr = ''
+    for each in mentions:
+        try:
+            toRespond.append({'id' : each.id, 'groupNo' : int(each.text.split(' ')[2].encode('ascii','ignore')), 'username' : each.user.screen_name.encode('ascii','ignore')})
+        except:
+            print "Oops"
+    for each in toRespond:
+        responseStr = "@" + each['username'] + " Group number " + str(each['groupNo']) + " reports at BLAH BLAH BLAH"
+        print responseStr
+        #api.PostUpdate(PLACEHOLDER,in_reply_to_status_id=each)
+    return toRespond[-1]['id'] #returns ID of most recent @
+
+
 class juryGroup:
     def __init__(self,input):
         self.columns = input.find_all('td')
@@ -86,3 +105,6 @@ for each in table_rows:
 for each in queue:
     api.PostUpdate(queue[each])
     time.sleep(60)
+
+#Respond to GetMentions
+recentID = AtMe()
