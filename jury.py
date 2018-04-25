@@ -31,7 +31,7 @@ class juryGroup:
         groupRange = self.columns[0].text.encode('ascii')
         self.groupRange = groupRange.split(' thru ')
         self.instructions = self.columns[1].text.encode('ascii')
-        rawTime = self.columns[3].text.encode('ascii').split(' ')
+        rawTime = self.columns[3].text.encode('ascii','ignore').split(' ')
         self.called = 0
         if len(rawTime) is 2: #time
             Time = concat(rawTime)
@@ -55,7 +55,7 @@ class juryGroup:
             return 0
     def report(self):
         if self.called is 1:
-            return 'Groups ' + str(self.groupRange[0]) + ' to ' + str(self.groupRange[1]) + ' please report to ' + self.Location + ' at ' + self.datetime.strftime('%c')
+            return 'Groups ' + str(self.groupRange[0]) + ' to ' + str(self.groupRange[1]) + ' please report to ' + self.Location + ' at ' + self.datetime.strftime('%A, %B %d')
         else:
             return 'Groups ' + str(self.groupRange[0]) + ' to ' + str(self.groupRange[1]) + ' please check again after ' + self.datetime.strftime('%I:%M%p') + ' on ' + self.datetime.strftime('%A, %B %d')
 
